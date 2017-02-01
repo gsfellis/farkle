@@ -1,0 +1,52 @@
+======================================================================================================
+FARKLE RULES
+======================================================================================================
+Farkle is a dice game that is multi-player with a minimum of two players, but no upper limit on the 
+number of participants. 
+
+The goal is to reach 10,000 points first.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+POINTS:
+
+Points are acquired one of three different ways.
+
+  * A roll of a 1 is worth 100 points.
+  * A roll of a 5 is worth 50 points.
+  * Three (3) dice rolld at the same time with the same value is worth 100 times the face value. 
+    For example: three 2's is 200 points and three 5's rolled is worth 500 points.
+  * One exception is that three 1's rolled is 1,000 points, not 100.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////    
+THE PLAY:
+
+  * The first player rolls all six dice at the same time and sets aside any "point dice" (1's, 5's,
+    or three of a kind). At this point the player has the option to continue to roll the remaining 
+    dice to collect even more points, or stop and keep any points acquired. 
+  * A Farkle occurs when the dice are rolled and no point dice appear. At this point the player loses
+    all the point dice they have collected during that turn and the play passes to the next player.
+    No points are recorded for that player's turn.
+  * If a player decides not to risk rolling a Farkle then they can stop rolling and the play passes 
+    to the next player. Any points collected during that turn are recorded.
+  * If, in the course of one turn, all six dice become point dice and are set aside, the player must 
+    roll all six dice at least one more time before stopping and keeping the points collected.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+ENTERING THE GAME:
+
+  * In order for a player to initially enter the game (and record points) they must continue to roll 
+    until at least 1,000 poiints are collected during one turn. Once the player officially enters the
+    game, the points are recorded and that player may stop rolling at any time during future turns. 
+    Sometimes it might take many turns before a player can get started.
+  * Secret Strategy: All point dice do not have to be set aside. If you roll a 1 and a 5, sometimes 
+    it may be strategic to keep the 1 and roll the 5 again with the rest of the non-point dice. This 
+    may give you a better chance of rolling a three of a kind. But, at least one point die must be 
+    set aside after each roll.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+WINNING:
+
+In order to win, a player must get 10,000 points recorded.
+
+After a player gets over 10,000, each of the other players get one turn to try to beat the first 
+player who goes out. The player with the highest score at the end is declared the winner!
