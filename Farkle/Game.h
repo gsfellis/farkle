@@ -10,7 +10,7 @@ private:
 	string Play();
 	void ShowNumPlayers();
 	void SetupPlayerNames(vector<Player>& players);
-	int Turn(Player player);
+	int Turn(Player& player);
 	bool CheckFor10k(int score);
 	string GetWinner(vector<Player> players);
 	void Congratulate(string player);
@@ -20,6 +20,8 @@ private:
 	void ShowRolls(vector<int>& dicePool);
 	array<int, 6> CountDice(vector<int>& dicePool);
 	bool IsValid(unsigned int& selection, vector<int>& dicePool);
+	int ScoreDice(vector<int>& keepDice, vector<int>& dicePool, int die, array<int, 6>& diceCount);
+	void RemoveFromDicePool(vector<int>& dicePool, int& die);
 
 public:
 	void GameLoop();

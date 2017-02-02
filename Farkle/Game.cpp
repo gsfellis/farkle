@@ -64,6 +64,7 @@ string Game::Play()
 	int numOfPlayers = 0;
 	int playerTurn = 0;
 	int firstTo10k = -1;
+	int turnScore = 0;
 	
 	ShowNumPlayers();
 	while (!(numOfPlayers > 1))
@@ -98,8 +99,16 @@ string Game::Play()
 			return winner;
 		}
 
-		// Run a turn for a player and add the resulting score to the player
-		players[playerTurn].AddScore(Turn(players[playerTurn]));
+		// Run a turn for a player
+		turnScore = Turn(players[playerTurn]);
+
+		if (!players[playerTurn].InGame() && turnScore >= 1000)
+		{
+			players[playerTurn].SetInGame();
+		}
+
+		// add turnscore to players score
+		players[playerTurn].AddScore(turnScore);
 
 		// Check if players score is over 10k
 		if (firstTo10k == -1 && CheckFor10k(players[playerTurn].Score()))
@@ -112,14 +121,14 @@ string Game::Play()
 }
 
 // Turn loop
-int Game::Turn(Player player)
+int Game::Turn(Player& player)
 {
 	vector<int> dicePool(6);
 	vector<int> keepDice;
 	array<int, 6> diceCount = { 0 };
 	int turnScore = 0;
 	bool farkle = true;
-	bool canPass = false;
+	bool canPass = player.InGame();
 	bool hasPassed = false;
 	bool reroll = false;
 	unsigned int selection = 1;
@@ -136,6 +145,7 @@ int Game::Turn(Player player)
 		}
 		
 		RollDice(dicePool);
+		farkle = true;
 		
 		do
 		{
@@ -158,12 +168,14 @@ int Game::Turn(Player player)
 
 			if (IsValid(selection, dicePool))
 			{
-				//ScoreDice(keepDice, dicePool, selection, diceCount);
-				cout << "Good move!" << endl;
+				turnScore += ScoreDice(keepDice, dicePool, selection, diceCount);
+								
+				farkle = false;
+				canPass = true;
 				system("pause");
-			}
+			}			
 			
-			if ((selection == 0) && (!player.InGame() || turnScore < 1000))
+			if (selection == 0 && !canPass)								
 			{
 				system("cls");
 				cout << "=================" << endl;
@@ -175,8 +187,6 @@ int Game::Turn(Player player)
 
 				system("pause");
 			}
-
-
 		} while (selection > 0 && selection != 9);
 
 		if (selection == 0)
@@ -186,7 +196,48 @@ int Game::Turn(Player player)
 		}		
 	}
 
-	return turnScore;
+	// return 0 if player farkled or turnScore
+	return turnScore = farkle ? 0 : turnScore;	
+}
+
+int Game::ScoreDice(vector<int>& keepDice, vector<int>& dicePool, int die, array<int, 6>& dieCount)
+{
+	die -= 1;
+	int score = 0;
+	int dieValue = dicePool[die];
+
+	if (dieCount[dieValue - 1] >= 3)
+	{
+		int i = 0;
+		while (i < 3)
+		{
+			for (int j = 0; j < dicePool.size(); j++)
+			{
+				if (dicePool[j] == dieValue)
+				{
+					keepDice.push_back(dicePool[j]);
+					RemoveFromDicePool(dicePool, j);
+					i++;
+				}
+			}
+		}
+
+		score = dieValue == 1 ? 1000 : dieValue * 100;
+	}
+	else if (dieValue == 1 || dieValue == 5)
+	{
+		keepDice.push_back(dicePool[die]);
+		RemoveFromDicePool(dicePool, die);
+
+		score = dieValue == 1 ? 100 : 50;
+	}
+
+	return score;
+}
+
+void Game::RemoveFromDicePool(vector<int>& dicePool, int& die)
+{
+	dicePool.erase(dicePool.begin() + die);
 }
 
 bool Game::IsValid(unsigned int& selection, vector<int>& dicePool)
