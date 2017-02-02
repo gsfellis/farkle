@@ -20,7 +20,7 @@ private:
 	void ShowRolls(vector<int>& dicePool);
 	array<int, 6> CountDice(vector<int>& dicePool);
 	bool IsValid(unsigned int& selection, vector<int>& dicePool);
-	int ScoreDice(vector<int>& keepDice, vector<int>& dicePool, int die, array<int, 6>& diceCount);
+	int ScoreDice(vector<int>& dicePool, int die, array<int, 6>& diceCount);
 	void RemoveFromDicePool(vector<int>& dicePool, int& die);
 
 public:

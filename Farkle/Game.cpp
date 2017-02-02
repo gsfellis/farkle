@@ -60,7 +60,8 @@ void Game::SetupPlayerNames(vector<Player>& players)
 // Primary Game Loop
 string Game::Play()
 {
-	bool noWinner = true;
+	string winner = "";
+	//bool noWinner = true;
 	int numOfPlayers = 0;
 	int playerTurn = 0;
 	int firstTo10k = -1;
@@ -84,7 +85,7 @@ string Game::Play()
 
 	WelcomePlayers(players);
 
-	while (noWinner)
+	while (winner == "")
 	{
 		// Return to first players turn
 		if (playerTurn == players.size())
@@ -95,8 +96,7 @@ string Game::Play()
 		// Check if we're at the first player to get 10k
 		if (firstTo10k >= 0 && playerTurn == firstTo10k)
 		{
-			string winner = GetWinner(players);
-			return winner;
+			winner = GetWinner(players);			
 		}
 
 		// Run a turn for a player
@@ -117,20 +117,24 @@ string Game::Play()
 		}		
 
 		playerTurn++; // Send to next players turn
-	}	
+	}
+
+	return winner;
 }
 
 // Turn loop
 int Game::Turn(Player& player)
 {
 	vector<int> dicePool(6);
-	vector<int> keepDice;
+	//vector<int> keepDice;
 	array<int, 6> diceCount = { 0 };
 	int turnScore = 0;
-	bool farkle = true;
-	bool canPass = player.InGame();
-	bool hasPassed = false;
-	bool reroll = false;
+	bool farkle = true,
+		canPass = player.InGame(),
+		canReroll = false,
+		hasPassed = false,
+		reroll = false;
+		
 	unsigned int selection = 1;
 
 	while (!hasPassed)
@@ -146,6 +150,7 @@ int Game::Turn(Player& player)
 		
 		RollDice(dicePool);
 		farkle = true;
+		canReroll = false;
 		
 		do
 		{
@@ -168,24 +173,36 @@ int Game::Turn(Player& player)
 
 			if (IsValid(selection, dicePool))
 			{
-				turnScore += ScoreDice(keepDice, dicePool, selection, diceCount);
+				turnScore += ScoreDice(dicePool, selection, diceCount);
 								
-				farkle = false;
-				canPass = true;
+				farkle = false;	
+				canReroll = true;
+				canPass = (player.InGame() || turnScore >= 1000) ? true : false;
+
+				cout << "canPass: " << boolalpha << canPass << endl;
+
 				system("pause");
 			}			
 			
-			if (selection == 0 && !canPass)								
+			if (selection == 0 && !farkle)
 			{
-				system("cls");
-				cout << "=================" << endl;
-				cout << "INVALID MOVE" << endl;
-				cout << "=================" << endl;
-				cout << "You are not in the game and haven't scored 1000 points this turn!" << endl << endl;
-				
-				selection = 1;
+				if ((selection == 0 && !canPass) || (selection == 9 && !canReroll))
+				{
+					string msg;
 
-				system("pause");
+					system("cls");
+					cout << "=================" << endl;
+					cout << "INVALID MOVE" << endl;
+					cout << "=================" << endl;
+
+					msg = selection == 0 ? player.Name() + " has not entered the game and has not scored 1000 points this turn!" : player.Name() + " cannot reroll at this time!";
+
+					cout << msg << endl << endl;
+
+					selection = 1;
+
+					system("pause");
+				}
 			}
 		} while (selection > 0 && selection != 9);
 
@@ -193,14 +210,14 @@ int Game::Turn(Player& player)
 		{
 			hasPassed = true;
 			system("pause");
-		}		
+		}	
 	}
 
 	// return 0 if player farkled or turnScore
 	return turnScore = farkle ? 0 : turnScore;	
 }
 
-int Game::ScoreDice(vector<int>& keepDice, vector<int>& dicePool, int die, array<int, 6>& dieCount)
+int Game::ScoreDice(vector<int>& dicePool, int die, array<int, 6>& dieCount)
 {
 	die -= 1;
 	int score = 0;
@@ -215,7 +232,7 @@ int Game::ScoreDice(vector<int>& keepDice, vector<int>& dicePool, int die, array
 			{
 				if (dicePool[j] == dieValue)
 				{
-					keepDice.push_back(dicePool[j]);
+					//keepDice.push_back(dicePool[j]);
 					RemoveFromDicePool(dicePool, j);
 					i++;
 				}
@@ -226,7 +243,7 @@ int Game::ScoreDice(vector<int>& keepDice, vector<int>& dicePool, int die, array
 	}
 	else if (dieValue == 1 || dieValue == 5)
 	{
-		keepDice.push_back(dicePool[die]);
+		//keepDice.push_back(dicePool[die]);
 		RemoveFromDicePool(dicePool, die);
 
 		score = dieValue == 1 ? 100 : 50;
@@ -255,7 +272,7 @@ array<int, 6> Game::CountDice(vector<int>& dicePool)
 {
 	array<int, 6> counter = { 0 };
 
-	for (int i = 0; i < dicePool.size(); i++)
+	for (unsigned int i = 0; i < dicePool.size(); i++)
 	{
 		counter[dicePool[i] - 1]++;
 	}
@@ -300,7 +317,7 @@ void Game::WelcomePlayers(vector<Player>& players)
 	cout << "=================" << endl << endl;
 
 	// setup playerNames for Welcome Message
-	for (int i = 0; i < players.size(); i++)
+	for (unsigned int i = 0; i < players.size(); i++)
 	{
 		if (i == players.size() - 1)
 		{
@@ -330,7 +347,7 @@ string Game::GetWinner(vector<Player> players)
 {
 	string winner = players[0].Name();
 
-	for (int i = 1; i < players.size(); i++)
+	for (unsigned int i = 1; i < players.size(); i++)
 	{
 		winner = players[i].Score() > players[i - 1].Score() ? players[i].Name() : winner;
 	}
