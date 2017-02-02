@@ -29,3 +29,15 @@ string Player::Name()
 {
 	return name;
 }
+
+// set inGame
+void Player::SetInGame()
+{
+	inGame = true;
+}
+
+// return inGame status
+bool Player::InGame()
+{
+	return inGame;
+}

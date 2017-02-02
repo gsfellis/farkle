@@ -8,6 +8,7 @@ class Player {
 private:
 	string name = "";
 	int score = 0;
+	bool inGame = false;
 
 public:
 	Player();
@@ -23,4 +24,10 @@ public:
 
 	// show Name
 	string Name();
+
+	// set inGame
+	void SetInGame();
+
+	// return inGame status
+	bool InGame();
 };

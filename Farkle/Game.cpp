@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <random>
+#include <array>
 
 #include "Player.h"
 #include "Game.h"
@@ -61,7 +63,7 @@ string Game::Play()
 	bool noWinner = true;
 	int numOfPlayers = 0;
 	int playerTurn = 0;
-	int firstTo10k = NULL;
+	int firstTo10k = -1;
 	
 	ShowNumPlayers();
 	while (!(numOfPlayers > 1))
@@ -90,7 +92,7 @@ string Game::Play()
 		}
 
 		// Check if we're at the first player to get 10k
-		if (playerTurn == firstTo10k)
+		if (firstTo10k >= 0 && playerTurn == firstTo10k)
 		{
 			string winner = GetWinner(players);
 			return winner;
@@ -100,13 +102,140 @@ string Game::Play()
 		players[playerTurn].AddScore(Turn(players[playerTurn]));
 
 		// Check if players score is over 10k
-		if (firstTo10k == NULL && CheckFor10k(players[playerTurn].Score()))
+		if (firstTo10k == -1 && CheckFor10k(players[playerTurn].Score()))
 		{
 			firstTo10k = playerTurn;
 		}		
 
 		playerTurn++; // Send to next players turn
 	}	
+}
+
+// Turn loop
+int Game::Turn(Player player)
+{
+	vector<int> dicePool(6);
+	vector<int> keepDice;
+	array<int, 6> diceCount = { 0 };
+	int turnScore = 0;
+	bool farkle = true;
+	bool canPass = false;
+	bool hasPassed = false;
+	bool reroll = false;
+	unsigned int selection = 1;
+
+	while (!hasPassed)
+	{
+		if (dicePool.size() == 0)
+		{
+			// populate dicePool back to 6 dice
+			for (int i = 0; i < 6; i++)
+			{
+				dicePool.push_back(1);
+			}
+		}
+		
+		RollDice(dicePool);
+		
+		do
+		{
+			system("cls");
+			cout << "=================" << endl;
+			cout << player.Name() << "'s Turn!" << endl;
+			cout << "=================" << endl;
+			cout << player.Name() << "'s Score: " << player.Score() << endl;
+			cout << "Turn Score: " << turnScore << endl << endl;
+
+			ShowRolls(dicePool);
+
+			diceCount = CountDice(dicePool);
+
+			cout << "Enter the die # you wish to keep. Triple values will automatically be kept." << endl;
+			cout << "Enter 9 to reroll dice or 0 to end your turn." << endl;
+			cout << "Selection: ";
+
+			selection = GetInput();
+
+			if (IsValid(selection, dicePool))
+			{
+				//ScoreDice(keepDice, dicePool, selection, diceCount);
+				cout << "Good move!" << endl;
+				system("pause");
+			}
+			
+			if ((selection == 0) && (!player.InGame() || turnScore < 1000))
+			{
+				system("cls");
+				cout << "=================" << endl;
+				cout << "INVALID MOVE" << endl;
+				cout << "=================" << endl;
+				cout << "You are not in the game and haven't scored 1000 points this turn!" << endl << endl;
+				
+				selection = 1;
+
+				system("pause");
+			}
+
+
+		} while (selection > 0 && selection != 9);
+
+		if (selection == 0)
+		{
+			hasPassed = true;
+			system("pause");
+		}		
+	}
+
+	return turnScore;
+}
+
+bool Game::IsValid(unsigned int& selection, vector<int>& dicePool)
+{
+	if (selection > 0 && selection <= dicePool.size())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+// Counts different dice values in a roll
+array<int, 6> Game::CountDice(vector<int>& dicePool)
+{
+	array<int, 6> counter = { 0 };
+
+	for (int i = 0; i < dicePool.size(); i++)
+	{
+		counter[dicePool[i] - 1]++;
+	}
+
+	return counter;
+}
+
+// A method to show dice rolls
+void Game::ShowRolls(vector<int>& dicePool)
+{
+	cout << "+------------+" << endl;
+	cout << "| Dice Rolls |" << endl;
+	cout << "+------------+" << endl;
+
+	for (unsigned int i = 0; i < dicePool.size(); i++)
+	{
+		cout << "| Die " << (i + 1) << ": [" << dicePool[i] << "] |" << endl;
+	}
+
+	cout << "+------------+" << endl << endl;
+}
+
+// A method to roll all the dice in a provided pool
+void Game::RollDice(vector<int>& dicePool)
+{
+	random_device rng;
+
+	for (unsigned int i = 0; i < dicePool.size(); i++)
+	{
+		dicePool[i] = rng() % 6 + 1;
+	}
 }
 
 // Display welcome message to players
@@ -156,21 +285,6 @@ string Game::GetWinner(vector<Player> players)
 	}
 
 	return winner;
-}
-
-// Turn loop
-int Game::Turn(Player player)
-{
-	vector<int> dicePool(6);
-	vector<int> keepDice;
-	int turnScore = 0;
-	
-	system("cls");
-	cout << "=================" << endl;
-	cout << player.Name() << " Score: " << player.Score() << endl;
-	cout << "=================" << endl << endl;
-
-	return turnScore;
 }
 
 // Congratulate the winner
