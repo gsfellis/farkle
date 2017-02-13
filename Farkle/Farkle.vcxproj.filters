@@ -17,7 +17,7 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
     <Text Include="Rules.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

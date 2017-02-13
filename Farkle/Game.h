@@ -6,6 +6,7 @@
 class Game
 {
 private:	
+	void ClearInput();
 	int GetInput();
 	string Play();
 	void ShowNumPlayers();
@@ -26,4 +27,3 @@ private:
 public:
 	void GameLoop();
 };
-
