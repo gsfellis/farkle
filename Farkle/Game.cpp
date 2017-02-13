@@ -12,19 +12,27 @@
 
 using namespace std;
 
+void Game::ClearInput()
+{
+	// if an invalid number is detected, clear the input stream
+	cin.clear();
+
+	// remove characters from the input stream until a newline or EOF is met			
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
 int Game::GetInput()
 {
 	unsigned int sel;
 
 	while (!(cin >> sel))
 	{
-		// if an invalid number is detected, clear the input stream
-		cin.clear();
+		ClearInput();
 
-		// remove characters from the input stream until a newline or EOF is met			
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cout << "Invalid selection. Try again: ";
 	}
+
+	ClearInput();
 
 	return sel;
 }
@@ -48,10 +56,13 @@ void Game::SetupPlayerNames(vector<Player>& players)
 	
 	for (unsigned int i = 0; i < players.size(); i++)
 	{
-		string name;		
+		string name;
 		
-		cout << "Enter name for Player " << (i + 1) << ": ";
+		cout << "Enter name for Player " << (i + 1) << " (no spaces): ";
+		
 		cin >> name;
+
+		ClearInput();
 
 		players[i] = Player(name);
 	}
@@ -61,7 +72,6 @@ void Game::SetupPlayerNames(vector<Player>& players)
 string Game::Play()
 {
 	string winner = "";
-	//bool noWinner = true;
 	int numOfPlayers = 0;
 	int playerTurn = 0;
 	int firstTo10k = -1;
@@ -96,7 +106,8 @@ string Game::Play()
 		// Check if we're at the first player to get 10k
 		if (firstTo10k >= 0 && playerTurn == firstTo10k)
 		{
-			winner = GetWinner(players);			
+			winner = GetWinner(players);
+			continue;
 		}
 
 		// Run a turn for a player
@@ -174,19 +185,17 @@ int Game::Turn(Player& player)
 			if (IsValid(selection, dicePool))
 			{
 				turnScore += ScoreDice(dicePool, selection, diceCount);
-								
-				farkle = false;	
+
+				farkle = false;
 				canReroll = true;
 				canPass = (player.InGame() || turnScore >= 1000) ? true : false;
 
-				cout << "canPass: " << boolalpha << canPass << endl;
+			}
 
-				system("pause");
-			}			
-			
-			if (selection == 0 && !farkle)
-			{
-				if ((selection == 0 && !canPass) || (selection == 9 && !canReroll))
+			if (selection == 0 || selection == 9)
+			{				
+				// if the player can't pass and they haven't farkled, or they can't reroll
+				if ((selection == 0 && !canPass && !farkle) || (selection == 9 && !canReroll))
 				{
 					string msg;
 
@@ -206,12 +215,24 @@ int Game::Turn(Player& player)
 			}
 		} while (selection > 0 && selection != 9);
 
-		if (selection == 0)
-		{
-			hasPassed = true;
-			system("pause");
-		}	
+		hasPassed = selection == 0 ? true : false;
 	}
+
+	system("cls");
+	cout << "=================" << endl;
+	cout << player.Name() << "'s TURN ENDS!" << endl;
+	cout << "=================" << endl;
+
+	if (farkle)
+	{
+		cout << player.Name() << " has FARKLED!" << endl;
+	}
+	else
+	{
+		cout << player.Name() << " has scored " << turnScore << " points this turn!" << endl;
+	}
+	
+	system("pause");
 
 	// return 0 if player farkled or turnScore
 	return turnScore = farkle ? 0 : turnScore;	
@@ -337,7 +358,7 @@ void Game::WelcomePlayers(vector<Player>& players)
 // Check if a player is over 10,000
 bool Game::CheckFor10k(int score)
 {
-	bool check = score >= 10000 ? true : false;
+	bool check = score >= 1000 ? true : false;
 
 	return check;
 }
