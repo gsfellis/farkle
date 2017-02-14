@@ -12,6 +12,7 @@
 
 using namespace std;
 
+// Clears the input stream when invalid characters are used
 void Game::ClearInput()
 {
 	// if an invalid number is detected, clear the input stream
@@ -21,6 +22,7 @@ void Game::ClearInput()
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
+// Returns an Integer for player input
 int Game::GetInput()
 {
 	unsigned int sel;
@@ -37,6 +39,7 @@ int Game::GetInput()
 	return sel;
 }
 
+// Prompt the user for the Number of Players
 void Game::ShowNumPlayers()
 {
 	system("cls");
@@ -238,6 +241,7 @@ int Game::Turn(Player& player)
 	return turnScore = farkle ? 0 : turnScore;	
 }
 
+// Scores and removes the dice selected by the player
 int Game::ScoreDice(vector<int>& dicePool, int die, array<int, 6>& dieCount)
 {
 	die -= 1;
@@ -273,11 +277,13 @@ int Game::ScoreDice(vector<int>& dicePool, int die, array<int, 6>& dieCount)
 	return score;
 }
 
+// Removes the selected die from the dice pool
 void Game::RemoveFromDicePool(vector<int>& dicePool, int& die)
 {
 	dicePool.erase(dicePool.begin() + die);
 }
 
+// Checks if the selection is a valid die in the dice pool
 bool Game::IsValid(unsigned int& selection, vector<int>& dicePool)
 {
 	if (selection > 0 && selection <= dicePool.size())
@@ -358,7 +364,7 @@ void Game::WelcomePlayers(vector<Player>& players)
 // Check if a player is over 10,000
 bool Game::CheckFor10k(int score)
 {
-	bool check = score >= 1000 ? true : false;
+	bool check = score >= 10000 ? true : false;
 
 	return check;
 }
