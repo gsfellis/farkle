@@ -194,7 +194,7 @@ array<int, 6> Game::CountDice(vector<int>& dicePool)
 // Check if a player is over 10,000
 bool Game::CheckFor10k(int score)
 {
-	bool isOver10k = score >= 1000 ? true : false;
+	bool isOver10k = score >= 10000 ? true : false;
 
 	return isOver10k;
 }
@@ -209,7 +209,7 @@ bool Game::ScoringDice(array<int, 6>& diceCount)
 	}
 	
 	// If no 1 or 5, check for any triples
-	for (int i = 1; i < diceCount.size(); i++)
+	for (unsigned int i = 1; i < diceCount.size(); i++)
 	{
 		if (i == 4) { i = 5; }
 
@@ -244,7 +244,7 @@ int Game::ScoreDice(vector<int>& dicePool, int die, array<int, 6>& dieCount, arr
 		int i = 0;
 		while (i < 3)
 		{
-			for (int j = 0; j < dicePool.size(); j++)
+			for (unsigned int j = 0; j < dicePool.size(); j++)
 			{
 				if (dicePool[j] == dieValue)
 				{					
