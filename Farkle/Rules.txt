@@ -13,7 +13,7 @@ Points are acquired one of three different ways.
 
   * A roll of a 1 is worth 100 points.
   * A roll of a 5 is worth 50 points.
-  * Three (3) dice rolld at the same time with the same value is worth 100 times the face value. 
+  * Three (3) dice rolled at the same time with the same value is worth 100 times the face value. 
     For example: three 2's is 200 points and three 5's rolled is worth 500 points.
   * One exception is that three 1's rolled is 1,000 points, not 100.
 

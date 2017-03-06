@@ -6,28 +6,19 @@ using namespace std;
 
 class Player {
 private:
-	string name = "";
-	int score = 0;
-	bool inGame = false;
+	string name;
+	int score;
+	bool inGame;
 
 public:
 	Player();
+	Player(string name); // New player constructor
 
-	// New player constructor
-	Player(string name);
-
-	// show score
-	int Score();
-
-	// add score
-	void AddScore(int value);
-
-	// show Name
-	string Name();
-
-	// set inGame
-	void SetInGame();
-
-	// return inGame status
-	bool InGame();
+	string Name(); // show Name
+	
+	void AddScore(int value); // add to score
+	int Score(); // show score	
+	
+	void SetInGame(); // set inGame	
+	bool InGame();	// return inGame status
 };

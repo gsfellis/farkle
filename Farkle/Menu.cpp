@@ -1,3 +1,9 @@
+// Menu.cpp
+/* Description:
+	This file contains the methods used to display the primary game
+	menu to the players.  It also handles reading the Rules.txt
+	file, per the assignment requirements.
+*/
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
@@ -30,6 +36,7 @@ void Menu::ShowRules()
 	string line;	// holds each line in the file
 	string filename = "Rules.txt";	// the file to be opened
 	ifstream myfile(filename);	// opens a stream of the file
+	
 	if (myfile.is_open())
 	{
 		system("cls"); // clear screen
@@ -48,5 +55,5 @@ void Menu::ShowRules()
 	}
 
 	cout << endl;
-	system("pause");
+	system("pause");	// Wait for player to press enter
 }
